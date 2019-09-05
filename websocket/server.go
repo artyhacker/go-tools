@@ -14,6 +14,9 @@ var addr = flag.String("addr", "localhost:8080", "http service address")
 var upgrader = websocket.Upgrader{} // use default options
 
 func echo(w http.ResponseWriter, r *http.Request) {
+	upgrader.CheckOrigin = func(r2 *http.Request) bool {
+		return true
+	}
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
@@ -43,6 +46,9 @@ var news = make(chan []byte, 1024)
 var connects = make([]*websocket.Conn, 0)
 
 func broadcast(w http.ResponseWriter, r *http.Request) {
+	upgrader.CheckOrigin = func(r2 *http.Request) bool {
+		return true
+	}
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
