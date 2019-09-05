@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Websocket Client</title>
+</head>
+<body>
+    url: <input id="server" size="50" placeholder="ws://..." /><br>
+    <textarea id="content" placeholder="message" rows="20" cols="50" wrap="hard" ></textarea>
+    <textarea id="res" placeholder="response" rows="20" cols="50" wrap="hard" ></textarea><br>
+    <button id="open" >Connecting</button>
+    <button id="close" >Close</button>
+    <button id="send" >Send</button>
+
+    <script>
+        const server = document.getElementById("server");
+        const content = document.getElementById("content");
+        const response = document.getElementById("res");
+        let ws = null;
+        document.getElementById("open").onclick = function() {
+            ws = new WebSocket(server.value);
+            ws.onclose = function (e) {
+                response.value = response.value + '\n' + 'Connect Closed';
+            };
+            ws.onopen =  function () {
+                response.value = response.value + '\n' + 'Connect Success';
+            };
+            ws.onerror =  function () {
+                response.value = response.value + '\n' + 'Connect Error';
+            };
+            ws.onmessage =  function (e) {
+                response.value = response.value + '\n' + 'Recv：\n' + e.data;
+            };
+        };
+        document.getElementById("close").onclick = function() {
+            if (ws && ws.close) {
+                ws.close();
+            }
+        };
+        document.getElementById("send").onclick = function() {
+            if (ws && ws.send) {
+                ws.send(content.value);
+            }
+        }
+    </script>
+</body>
+</html>
